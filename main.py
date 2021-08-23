@@ -150,7 +150,7 @@ def main():
                     print(f"Preparing to buy {coin['symbol']}")
 
                     price = get_price(symbol_only, pairing)
-                    volume = convert_volume(coin['symbol']+pairing, qty, price)
+                    volume = convert_volume(coin, qty, price)
 
                     try:
                         # Run a test trade if true
