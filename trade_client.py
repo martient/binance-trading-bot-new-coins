@@ -20,7 +20,7 @@ def convert_volume(coin, quantity, last_price):
         except:
           lot_size = 0
           print("ran exept block for lot_size")
-            pass
+          pass
 
         # calculate the volume in coin from QUANTITY in USDT (default)
         volume = float(quantity / float(last_price))
