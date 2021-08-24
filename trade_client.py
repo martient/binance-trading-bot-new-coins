@@ -18,7 +18,8 @@ def convert_volume(coin, quantity, last_price):
                 lot_size[coin] = 0
 
         except:
-          lot_size = 0
+          lot_size = {}
+          lot_size[coin] = 0
           print("ran exept block for lot_size")
           pass
 
