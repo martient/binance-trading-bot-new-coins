@@ -2,3 +2,6 @@
   # CLIENT DETAILS
   binance_api: "BINANCE_API_KEY"
   binance_secret: "BINANCE_SECRET"
+
+  telegram_token: "GOD_FATHER_TOKEN"
+  telegram_tchat_id: "USER_INFO_ID"

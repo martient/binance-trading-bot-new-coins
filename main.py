@@ -1,3 +1,4 @@
+from auth.telegram_auth import load_telegram_creds
 from trade_client import *
 from store_order import *
 from load_config import *
@@ -8,6 +9,7 @@ import time
 import json
 import os.path
 
+clientTelegram, telegram_tchat_id = load_telegram_creds('auth/auth.yml')
 
 # loads local configuration
 config = load_config('config.yml')
@@ -87,7 +89,7 @@ def main():
                     store_order('order.json', order)
 
                     print(f'updated tp: {round(new_tp, 3)} and sl: {round(new_sl, 3)}')
-
+                    clientTelegram.dispatcher.bot.send_message(chat_id=telegram_tchat_id, text=f'updated tp: {round(new_tp, 3)} and sl: {round(new_sl, 3)}')
                 # close trade if tsl is reached or trail option is not enabled
                 elif float(last_price) < stored_price - (stored_price*sl /100) or float(last_price) > stored_price + (stored_price*tp /100) and not enable_tsl:
 
@@ -99,6 +101,7 @@ def main():
 
 
                         print(f"sold {coin} at {(float(last_price) - stored_price) / float(stored_price)*100}")
+                        clientTelegram.dispatcher.bot.send_message(chat_id=telegram_tchat_id, text=f"sold {coin} at {(float(last_price) - stored_price) / float(stored_price)*100}")
 
                         # remove order from json file
                         order.pop(coin)
@@ -141,6 +144,8 @@ def main():
 
             all_coins = all_coins_recheck
             print(f'New coins detected: {new_coins}')
+            clientTelegram.dispatcher.bot.send_message(chat_id=telegram_tchat_id, text=f'New coins detected: {new_coins}')
+
 
             for coin in new_coins:
 
@@ -148,6 +153,8 @@ def main():
                 if coin['symbol'] not in order and pairing in coin['symbol']:
                     symbol_only = coin['symbol'].split(pairing)[0]
                     print(f"Preparing to buy {coin['symbol']}")
+                    clientTelegram.dispatcher.bot.send_message(chat_id=telegram_tchat_id, text=f"Preparing to buy {coin['symbol']}")
+
 
                     price = get_price(symbol_only, pairing)
                     volume = convert_volume(coin, qty, price)
@@ -165,6 +172,8 @@ def main():
                                         }
 
                             print('PLACING TEST ORDER')
+                            clientTelegram.dispatcher.bot.send_message(chat_id=telegram_tchat_id, text="PLACING TEST ORDER")
+
 
                         # place a live order if False
                         else:
@@ -177,10 +186,12 @@ def main():
 
                     else:
                         print(f"Order created with {volume} on {coin['symbol']}")
+                        clientTelegram.dispatcher.bot.send_message(chat_id=telegram_tchat_id, text=f"Order created with {volume} on {coin['symbol']}")
 
                         store_order('order.json', order)
                 else:
                     print(f"New coin detected, but {coin['symbol']} is currently in portfolio, or pairing is not {pairing}")
+                    clientTelegram.dispatcher.bot.send_message(chat_id=telegram_tchat_id, text=f"New coin detected, but {coin['symbol']} is currently in portfolio, or pairing is not {pairing}")
 
         else:
             pass
@@ -191,4 +202,5 @@ def main():
 
 if __name__ == '__main__':
     print('working...')
+    clientTelegram.dispatcher.bot.send_message(chat_id=telegram_tchat_id, text=f"Working...")
     main()
